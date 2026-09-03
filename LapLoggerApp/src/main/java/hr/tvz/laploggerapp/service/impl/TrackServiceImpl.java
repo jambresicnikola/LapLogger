@@ -8,14 +8,13 @@ import hr.tvz.laploggerapp.mapper.TrackMapper;
 import hr.tvz.laploggerapp.model.Track;
 import hr.tvz.laploggerapp.repository.TrackRepository;
 import hr.tvz.laploggerapp.service.TrackService;
+import hr.tvz.laploggerapp.util.ErrorMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TrackServiceImpl implements TrackService {
-    private static final String TRACK_NOT_FOUND_WITH_ID_MESSAGE = "Track not found with id ";
-
     private final TrackRepository trackRepository;
     private final TrackMapper trackMapper;
 
@@ -33,7 +32,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public TrackDto fetchTrackById(Long id) {
         return trackRepository.findById(id).map(trackMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException(TRACK_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id));
     }
 
     @Override
@@ -46,7 +45,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public void deleteTrackById(Long id) {
         if (!trackRepository.existsById(id)) {
-            throw new ResourceNotFoundException(TRACK_NOT_FOUND_WITH_ID_MESSAGE + id);
+            throw new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id);
         }
 
         trackRepository.deleteById(id);
@@ -55,7 +54,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public TrackDto updateTrack(Long id, TrackCommand trackCommand) {
         Track track = trackRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(TRACK_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id));
 
         trackMapper.updateTrackFromCommand(trackCommand, track);
         Track updatedTrack = trackRepository.save(track);
@@ -66,7 +65,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public TrackDto patchTrack(Long id, TrackPatchCommand trackPatchCommand) {
         Track track = trackRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(TRACK_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id));
 
         trackMapper.updateTrackFromPatchCommand(trackPatchCommand, track);
         Track updatedTrack = trackRepository.save(track);

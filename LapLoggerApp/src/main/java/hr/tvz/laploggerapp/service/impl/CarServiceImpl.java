@@ -8,14 +8,13 @@ import hr.tvz.laploggerapp.mapper.CarMapper;
 import hr.tvz.laploggerapp.model.Car;
 import hr.tvz.laploggerapp.repository.CarRepository;
 import hr.tvz.laploggerapp.service.CarService;
+import hr.tvz.laploggerapp.util.ErrorMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class CarServiceImpl implements CarService {
-    private static final String CAR_NOT_FOUND_WITH_ID_MESSAGE = "Car not found with id ";
-
     private final CarRepository carRepository;
     private final CarMapper carMapper;
 
@@ -37,7 +36,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto fetchCarById(Long id) {
         return carRepository.findById(id).map(carMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException(CAR_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id));
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void deleteCarById(Long id) {
         if (!carRepository.existsById(id)) {
-            throw new ResourceNotFoundException(CAR_NOT_FOUND_WITH_ID_MESSAGE + id);
+            throw new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id);
         }
 
         carRepository.deleteById(id);
@@ -59,7 +58,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto updateCar(Long id, CarCommand carCommand) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(CAR_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id));
 
         carMapper.updateCarFromCommand(carCommand, car);
         Car updatedCar = carRepository.save(car);
@@ -70,7 +69,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto patchCar(Long id, CarPatchCommand carPatchCommand) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(CAR_NOT_FOUND_WITH_ID_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id));
 
         carMapper.updateCarFromPatchCommand(carPatchCommand, car);
         Car updatedCar = carRepository.save(car);
