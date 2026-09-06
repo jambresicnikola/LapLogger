@@ -13,6 +13,7 @@ public interface SessionService {
     SessionDto fetchSessionById(Long id);
     List<SessionDto> fetchAllSessionsByCarId(Long carId);
     SessionDto createSession(SessionCommand sessionCommand);
+    void deleteSessionById(Long id);
     SessionDto updateSession(Long id, SessionCommand sessionCommand);
     SessionDto patchSession(Long id, SessionPatchCommand sessionPatchCommand);
 }
