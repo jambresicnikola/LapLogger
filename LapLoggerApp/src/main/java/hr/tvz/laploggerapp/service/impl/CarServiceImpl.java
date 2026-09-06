@@ -9,6 +9,7 @@ import hr.tvz.laploggerapp.model.Car;
 import hr.tvz.laploggerapp.repository.CarRepository;
 import hr.tvz.laploggerapp.service.CarService;
 import hr.tvz.laploggerapp.util.ErrorMessage;
+import hr.tvz.laploggerapp.util.RepositoryUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,9 +42,9 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto createCar(CarCommand carCommand) {
-        Car savedCar = carRepository.save(carMapper.toEntity(carCommand));
+        Car car = carRepository.save(carMapper.toEntity(carCommand));
 
-        return carMapper.toDto(savedCar);
+        return carMapper.toDto(car);
     }
 
     @Override
@@ -57,23 +58,23 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto updateCar(Long id, CarCommand carCommand) {
-        Car car = carRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id));
+        Car car = RepositoryUtils.findOrThrow(
+                carRepository.findById(id), ErrorMessage.CAR_NOT_FOUND.getMessage() + id);
 
         carMapper.updateCarFromCommand(carCommand, car);
-        Car updatedCar = carRepository.save(car);
+        car = carRepository.save(car);
 
-        return carMapper.toDto(updatedCar);
+        return carMapper.toDto(car);
     }
 
     @Override
     public CarDto patchCar(Long id, CarPatchCommand carPatchCommand) {
-        Car car = carRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CAR_NOT_FOUND.getMessage() + id));
+        Car car = RepositoryUtils.findOrThrow(
+                carRepository.findById(id), ErrorMessage.CAR_NOT_FOUND.getMessage() + id);
 
         carMapper.updateCarFromPatchCommand(carPatchCommand, car);
-        Car updatedCar = carRepository.save(car);
+        car = carRepository.save(car);
 
-        return carMapper.toDto(updatedCar);
+        return carMapper.toDto(car);
     }
 }

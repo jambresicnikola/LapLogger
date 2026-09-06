@@ -5,7 +5,6 @@ import hr.tvz.laploggerapp.command.CarPatchCommand;
 import hr.tvz.laploggerapp.dto.CarDto;
 import hr.tvz.laploggerapp.service.CarService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -52,7 +51,7 @@ public class CarController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCarById(@PathVariable Long id) {
         carService.deleteCarById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")

@@ -40,15 +40,15 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity<SessionDto> createSession(@Valid @RequestBody SessionCommand sessionCommand) {
-        SessionDto savedSession = sessionService.createSession(sessionCommand);
+        SessionDto createdSessionDto = sessionService.createSession(sessionCommand);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedSession.id())
+                .buildAndExpand(createdSessionDto.id())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedSession);
+        return ResponseEntity.created(location).body(createdSessionDto);
     }
 
     @DeleteMapping("/{id}")

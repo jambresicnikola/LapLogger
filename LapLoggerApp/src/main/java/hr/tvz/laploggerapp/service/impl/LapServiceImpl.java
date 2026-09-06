@@ -11,6 +11,7 @@ import hr.tvz.laploggerapp.repository.LapRepository;
 import hr.tvz.laploggerapp.repository.SessionRepository;
 import hr.tvz.laploggerapp.service.LapService;
 import hr.tvz.laploggerapp.util.ErrorMessage;
+import hr.tvz.laploggerapp.util.RepositoryUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,8 +45,10 @@ public class LapServiceImpl implements LapService {
 
     @Override
     public LapDto createLap(LapCommand lapCommand) {
-        Session session = sessionRepository.findById(lapCommand.sessionId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.SESSION_NOT_FOUND.getMessage() +  lapCommand.sessionId()));
+        Session session = RepositoryUtils.findOrThrow(
+                sessionRepository.findById(lapCommand.sessionId()),
+                ErrorMessage.SESSION_NOT_FOUND.getMessage() + lapCommand.sessionId()
+        );
 
         Lap lap = lapMapper.toEntity(lapCommand);
         lap.setSession(session);
@@ -66,11 +69,15 @@ public class LapServiceImpl implements LapService {
 
     @Override
     public LapDto updateLap(Long id, LapCommand lapCommand) {
-        Lap lap = lapRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.LAP_NOT_FOUND.getMessage() + id));
+        Lap lap = RepositoryUtils.findOrThrow(
+                lapRepository.findById(id),
+                ErrorMessage.LAP_NOT_FOUND.getMessage() + id
+        );
 
-        Session session = sessionRepository.findById(lapCommand.sessionId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.SESSION_NOT_FOUND.getMessage() + lapCommand.sessionId()));
+        Session session = RepositoryUtils.findOrThrow(
+                sessionRepository.findById(lapCommand.sessionId()),
+                ErrorMessage.SESSION_NOT_FOUND.getMessage() + lapCommand.sessionId()
+        );
 
         lapMapper.updateLapFromLapCommand(lapCommand, lap);
         lap.setSession(session);
@@ -82,14 +89,18 @@ public class LapServiceImpl implements LapService {
 
     @Override
     public LapDto patchLap(Long id, LapPatchCommand lapPatchCommand) {
-        Lap lap = lapRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.LAP_NOT_FOUND.getMessage() + id));
+        Lap lap = RepositoryUtils.findOrThrow(
+                lapRepository.findById(id),
+                ErrorMessage.LAP_NOT_FOUND.getMessage() + id
+        );
 
         lapMapper.updateLapFromPatchCommand(lapPatchCommand, lap);
 
         if (lapPatchCommand.sessionId() != null) {
-            Session session = sessionRepository.findById(lapPatchCommand.sessionId())
-                    .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.SESSION_NOT_FOUND.getMessage() + lapPatchCommand.sessionId()));
+            Session session = RepositoryUtils.findOrThrow(
+                    sessionRepository.findById(lapPatchCommand.sessionId()),
+                    ErrorMessage.SESSION_NOT_FOUND.getMessage() + lapPatchCommand.sessionId()
+            );
 
             lap.setSession(session);
         }
