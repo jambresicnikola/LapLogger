@@ -51,6 +51,12 @@ public class SessionController {
         return ResponseEntity.created(location).body(savedSession);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSessionById(@PathVariable Long id) {
+        sessionService.deleteSessionById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SessionDto> updateSession(@PathVariable Long id, @Valid @RequestBody SessionCommand sessionCommand) {
         return ResponseEntity.ok(sessionService.updateSession(id, sessionCommand));

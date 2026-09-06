@@ -68,6 +68,15 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public void deleteSessionById(Long id) {
+        if (!sessionRepository.existsById(id)) {
+            throw new ResourceNotFoundException(ErrorMessage.SESSION_NOT_FOUND.getMessage() + id);
+        }
+
+        sessionRepository.deleteById(id);
+    }
+
+    @Override
     public SessionDto updateSession(Long id, SessionCommand sessionCommand) {
         Session session = sessionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
                 ErrorMessage.SESSION_NOT_FOUND.getMessage() + id));
