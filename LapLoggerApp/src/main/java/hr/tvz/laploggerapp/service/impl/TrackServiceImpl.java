@@ -9,6 +9,7 @@ import hr.tvz.laploggerapp.model.Track;
 import hr.tvz.laploggerapp.repository.TrackRepository;
 import hr.tvz.laploggerapp.service.TrackService;
 import hr.tvz.laploggerapp.util.ErrorMessage;
+import hr.tvz.laploggerapp.util.RepositoryUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public TrackDto createTrack(TrackCommand trackCommand) {
-        Track savedTrack = trackRepository.save(trackMapper.toEntity(trackCommand));
+        Track track = trackRepository.save(trackMapper.toEntity(trackCommand));
 
-        return trackMapper.toDto(savedTrack);
+        return trackMapper.toDto(track);
     }
 
     @Override
@@ -53,23 +54,27 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public TrackDto updateTrack(Long id, TrackCommand trackCommand) {
-        Track track = trackRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id));
+        Track track = RepositoryUtils.findOrThrow(
+                trackRepository.findById(id),
+                ErrorMessage.TRACK_NOT_FOUND.getMessage() + id
+        );
 
         trackMapper.updateTrackFromCommand(trackCommand, track);
-        Track updatedTrack = trackRepository.save(track);
+        track = trackRepository.save(track);
 
-        return trackMapper.toDto(updatedTrack);
+        return trackMapper.toDto(track);
     }
 
     @Override
     public TrackDto patchTrack(Long id, TrackPatchCommand trackPatchCommand) {
-        Track track = trackRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.TRACK_NOT_FOUND.getMessage() + id));
+        Track track = RepositoryUtils.findOrThrow(
+                trackRepository.findById(id),
+                ErrorMessage.TRACK_NOT_FOUND.getMessage() + id
+        );
 
         trackMapper.updateTrackFromPatchCommand(trackPatchCommand, track);
-        Track updatedTrack = trackRepository.save(track);
+        track = trackRepository.save(track);
 
-        return trackMapper.toDto(updatedTrack);
+        return trackMapper.toDto(track);
     }
 }

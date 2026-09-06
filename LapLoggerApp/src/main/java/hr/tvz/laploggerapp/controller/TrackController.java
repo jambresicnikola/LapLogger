@@ -5,7 +5,6 @@ import hr.tvz.laploggerapp.command.TrackPatchCommand;
 import hr.tvz.laploggerapp.dto.TrackDto;
 import hr.tvz.laploggerapp.service.TrackService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,7 +47,7 @@ public class TrackController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTrackById(@PathVariable Long id) {
         trackService.deleteTrackById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
