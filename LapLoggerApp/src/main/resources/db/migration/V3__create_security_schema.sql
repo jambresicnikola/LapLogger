@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS app_user (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS authority (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS user_authority (
+    user_id BIGINT NOT NULL REFERENCES app_user(id) ON DELETE CASCADE,
+    authority_id BIGINT NOT NULL REFERENCES authority(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, authority_id)
+);
